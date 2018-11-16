@@ -13,10 +13,9 @@ def printPollStat(pollData):
         keyItem=i+" "
         percentItem="{:.3f}".format((pollData[i]/totalVotes)*100)
         votesItem =  str(pollData[i])
-        items.append(keyItem + str(percentItem)+'% ('+votesItem+')')
+        items.append(keyItem + str(percentItem)+'% ('+votesItem+')\n')
     items.append("-------------------------")
     items.append("WINNER "+winner)
-    #print(items)
     with open(outFileName, 'w') as outFile:
         for i in items:
             print(i)
