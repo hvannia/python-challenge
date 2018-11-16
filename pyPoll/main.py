@@ -2,16 +2,26 @@ import os
 import csv
 import sys
 
-def printPollData(pollData):
-    totalVotes=0
-    winner=""
-    totalVotes= sum(pollData.values())
-    print('Election Results /n -------------------------')
-    print(f'Total Votes: {totalVotes}')
-    print('-------------------------')
+def printPollStat(pollData):
+    totalVotes=sum(pollData.values())
+    winner=max(pollData, key=pollData.get)
+    outFileName="poll_results.txt"
+    #save all to be printed in list
+    items=["Election Results\n", "-------------------------\n","Total Votes: "+str(totalVotes)+"\n" ,"-------------------------\n"]
     for i in pollData:
-      # FIX THIS   print(f'{pollData.keys(i)} :  { pollData.values(i)/totalVotes} ({ pollData.values(i)})')
-
+        #itemDesc= key(Candidate+ percentage + tital votes)
+        keyItem=i+" "
+        percentItem="{:.3f}".format((pollData[i]/totalVotes)*100)
+        votesItem =  str(pollData[i])
+        items.append(keyItem + str(percentItem)+'% ('+votesItem+')')
+    items.append("-------------------------")
+    items.append("WINNER "+winner)
+    #print(items)
+    with open(outFileName, 'w') as outFile:
+        for i in items:
+            print(i)
+            outFile.write(i)
+# End Of Function
 
 
 
@@ -20,19 +30,13 @@ fileName= "election_data.csv"
 pollData ={}
 with open(fileName) as f:
     dReader = csv.DictReader(f)
-    #read data, create new dict with new single candidate
     try:
         for row in dReader:
             if row['Candidate'] in pollData:
                 pollData[row['Candidate']]= pollData[row['Candidate']]+1
             else:
                 pollData[row['Candidate']]=1
-        #print(pollData)
-        printPollData(pollData)
-
-        # send print to fun
-
-
+        printPollStat(pollData)
     #catch file error
     except csv.Error as e:
         sys.exit('file %s, line %d: %s' % (fileName, dReader.line_num, e))
